@@ -37,20 +37,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load font and create 3D text
     const fontLoader = new THREE.FontLoader();
-    fontLoader.load('https://cdn.jsdelivr.net/npm/three@0.134.0/examples/fonts/helvetiker_bold.typeface.json', function(font) {
+    fontLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', function(font) {
         const textGeometry = new THREE.TextGeometry('CCC', {
             font: font,
             size: 1.5,
-            height: 0.5,
+            height: 0.4,
             curveSegments: 12,
             bevelEnabled: true,
-            bevelThickness: 0.05,
-            bevelSize: 0.03,
+            bevelThickness: 0.03,
+            bevelSize: 0.02,
             bevelOffset: 0,
             bevelSegments: 5
         });
 
-        textGeometry.computeBoundingBox();
         textGeometry.center();
 
         const textMaterial = new THREE.MeshStandardMaterial({
@@ -60,10 +59,60 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-        textMesh.position.set(0, 0, 0);
         scene.add(textMesh);
-
         window.textMesh = textMesh;
+    });
+
+    // Create small wireframe CCCs floating along the whole page
+    const miniCCCs = [];
+    fontLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', function(font) {
+        // Fixed positions for 6 CCCs spread across the page scroll
+        const positions = [
+            { x: 3, y: 1, z: -1 },
+            { x: -3, y: -6, z: -2 },
+            { x: 3.5, y: -14, z: -1.5 },
+            { x: -3.5, y: -22, z: -1 },
+            { x: 3, y: -30, z: -2 },
+            { x: -3, y: -38, z: -1.5 }
+        ];
+
+        for (let i = 0; i < 6; i++) {
+            const miniGeometry = new THREE.TextGeometry('CCC', {
+                font: font,
+                size: 0.25,
+                height: 0.06,
+                curveSegments: 8,
+                bevelEnabled: false
+            });
+            miniGeometry.center();
+
+            const edges = new THREE.EdgesGeometry(miniGeometry, 15);
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.4
+            });
+            const miniMesh = new THREE.LineSegments(edges, lineMaterial);
+            miniMesh.position.set(positions[i].x, positions[i].y, positions[i].z);
+            miniMesh.rotation.set(
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                Math.random() * Math.PI
+            );
+            miniMesh.userData = {
+                rotationSpeed: {
+                    x: (Math.random() - 0.5) * 0.005,
+                    y: (Math.random() - 0.5) * 0.005,
+                    z: (Math.random() - 0.5) * 0.005
+                },
+                floatSpeed: Math.random() * 0.3 + 0.3,
+                floatOffset: Math.random() * Math.PI * 2,
+                baseY: miniMesh.position.y
+            };
+            scene.add(miniMesh);
+            miniCCCs.push(miniMesh);
+        }
+        window.miniCCCs = miniCCCs;
     });
 
     camera.position.z = 5;
@@ -112,14 +161,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Animation loop
+    let time = 0;
     function animate() {
         requestAnimationFrame(animate);
+        time += 0.016;
+
+        // Animate floating wireframe CCCs
+        if (window.miniCCCs) {
+            window.miniCCCs.forEach((mini) => {
+                mini.rotation.x += mini.userData.rotationSpeed.x;
+                mini.rotation.y += mini.userData.rotationSpeed.y;
+                mini.rotation.z += mini.userData.rotationSpeed.z;
+                mini.position.y += Math.sin(time * mini.userData.floatSpeed + mini.userData.floatOffset) * 0.002;
+            });
+        }
+
         renderer.render(scene, camera);
     }
     animate();
 
     // Scroll-triggered fade-in animations
     const fadeElements = document.querySelectorAll('.fade-in');
+    const videoSections = document.querySelectorAll('.video-section');
 
     const observerOptions = {
         root: null,
@@ -131,13 +194,16 @@ document.addEventListener('DOMContentLoaded', function() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
+            } else {
+                entry.target.classList.remove('visible');
             }
         });
     }, observerOptions);
 
     fadeElements.forEach(el => observer.observe(el));
+    videoSections.forEach(el => observer.observe(el));
 
-    // Parallax effect on scroll
+    // Parallax effect on scroll - move camera to follow scroll
     window.addEventListener('scroll', function() {
         const scrolled = window.pageYOffset;
         const heroContent = document.querySelector('.hero-content');
@@ -151,5 +217,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (scrollHint) {
             scrollHint.style.opacity = 1 - (scrolled / 300);
         }
+
+        // Move camera down as user scrolls to keep CCCs visible
+        camera.position.y = -scrolled * 0.005;
     });
 });
