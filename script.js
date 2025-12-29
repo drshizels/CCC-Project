@@ -221,4 +221,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Move camera down as user scrolls to keep CCCs visible
         camera.position.y = -scrolled * 0.005;
     });
+
+    // YouTube thumbnail click to load video
+    document.querySelectorAll('.youtube-wrapper').forEach(wrapper => {
+        wrapper.addEventListener('click', function() {
+            const videoId = this.dataset.videoId;
+            const iframe = document.createElement('iframe');
+            iframe.className = 'youtube-short';
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+            iframe.allowFullscreen = true;
+            this.innerHTML = '';
+            this.appendChild(iframe);
+            this.style.cursor = 'default';
+        });
+    });
 });
