@@ -231,10 +231,16 @@ body {
 
 /* Reel Container */
 .reel-container {
-    width: 90%;
-    max-width: 900px;
+    width: 50%;
+    max-width: 500px;
     margin: 0 auto;
     aspect-ratio: 16 / 9;
+    transition: width 0.4s ease, max-width 0.4s ease, transform 0.4s ease;
+}
+
+.reel-container:hover {
+    width: 70%;
+    max-width: 700px;
 }
 
 .reel-container iframe {
@@ -243,6 +249,11 @@ body {
     border: none;
     border-radius: 12px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 10px 20px rgba(0, 0, 0, 0.4);
+    transition: box-shadow 0.4s ease;
+}
+
+.reel-container:hover iframe {
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 0 15px 30px rgba(0, 0, 0, 0.5);
 }
 
 /* YouTube Short Embed */
