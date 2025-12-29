@@ -1,0 +1,53 @@
+CCC PROJECT SESSION NOTES
+=========================
+Last Updated: December 28, 2025
+
+PROJECT INFO:
+- Location: ~/Desktop/trae/the-CC-project/
+- GitHub Repo: https://github.com/drshizels/CCC-Project
+- Live Site: https://drshizels.github.io/CCC-Project/
+
+WHAT WE DID THIS SESSION:
+-------------------------
+1. Videos weren't loading on GitHub Pages because they exceeded GitHub's 100MB file limit
+
+2. Switched from self-hosted videos to YouTube embeds
+
+3. Created "BRANDS" section with 5 YouTube Shorts:
+   - ijD_MkEbvKU
+   - wmgaVDNeV7g
+   - kVJXxwRpOXQ
+   - CXvF5_tbWZ8
+   - OAraIlpncto
+
+4. Removed HAT and EVENTS sections - only BRANDS remains
+
+5. Added deep shadows to the video embeds for depth
+
+6. Tried a custom thumbnail overlay to hide YouTube's red play button but it didn't work, so reverted to regular YouTube embeds
+
+CURRENT STATE:
+--------------
+- Site has one video section: "BRANDS" with 5 YouTube Shorts
+- Videos display with shadows and scale up on hover
+- Regular YouTube embeds (with red play button)
+- 3D "CCC" text in hero section with Vanta.js topology background
+- Floating wireframe CCCs throughout the page
+
+FILES:
+------
+- index.html - Main HTML structure
+- styles.css - All styling including video carousel
+- script.js - Three.js 3D text, Vanta background, scroll animations
+
+TO TEST LOCALLY:
+----------------
+Run: python3 -m http.server 8080
+Then open: http://localhost:8080
+
+(YouTube embeds don't work from file:// URLs, need localhost)
+
+NOTES:
+------
+- Large video files (*.mp4) are in .gitignore to avoid GitHub size limits
+- User is a videographer in Glendale, CA building portfolio site
