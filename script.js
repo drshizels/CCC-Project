@@ -192,6 +192,14 @@ document.addEventListener('DOMContentLoaded', function() {
         requestAnimationFrame(animate);
         time += 0.016;
 
+        // Snap back to original position when not dragging
+        if (!isDragging && window.textMesh) {
+            rotationX *= 0.92;
+            rotationY *= 0.92;
+            window.textMesh.rotation.x = rotationX;
+            window.textMesh.rotation.y = rotationY;
+        }
+
         // Animate floating wireframe CCCs
         if (window.miniCCCs) {
             window.miniCCCs.forEach((mini) => {
