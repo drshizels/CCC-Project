@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', function() {
     fontLoader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', function(font) {
         const textGeometry = new THREE.TextGeometry('DeyVision', {
             font: font,
-            size: isMobile ? 0.4 : 0.7,
-            height: isMobile ? 0.2 : 0.4,
+            size: isMobile ? 0.28 : 0.7,
+            height: isMobile ? 0.15 : 0.4,
             curveSegments: 12,
             bevelEnabled: true,
             bevelThickness: 0.03,
@@ -151,6 +151,31 @@ document.addEventListener('DOMContentLoaded', function() {
         previousMousePosition = { x: e.clientX, y: e.clientY };
     });
 
+    // Touch events for mobile
+    container.addEventListener('touchstart', function(e) {
+        isDragging = true;
+        previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }, { passive: true });
+
+    document.addEventListener('touchend', function() {
+        isDragging = false;
+    });
+
+    document.addEventListener('touchmove', function(e) {
+        if (!isDragging || !window.textMesh) return;
+
+        const deltaX = e.touches[0].clientX - previousMousePosition.x;
+        const deltaY = e.touches[0].clientY - previousMousePosition.y;
+
+        rotationY += deltaX * 0.01;
+        rotationX += deltaY * 0.01;
+        rotationX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotationX));
+
+        window.textMesh.rotation.y = rotationY;
+        window.textMesh.rotation.x = rotationX;
+
+        previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }, { passive: true });
 
     container.style.cursor = 'grab';
 
